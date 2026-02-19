@@ -18,7 +18,8 @@ parameters:
   values:
     - started
     - stopped
- 
+    - restarted
+
 - name: instance_id
   displayName: EC2 Instance ID
   type: string
