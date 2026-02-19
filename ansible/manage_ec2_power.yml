@@ -10,14 +10,14 @@
  
   tasks:
   - name: Show input parameters
-  debug:
-    msg:
-      - "aws_account_id = {{ aws_account_id | default('NOT SET') }}"
-      - "Instance ID = {{ instance_id | default('NOT SET') }}"
-      - "Region = {{ region | default('NOT SET') }}"
-      - "SNC tag = {{ tag_sncreqcreate | default('NOT SET') }}"
-      - "power_state = {{ power_state | default('NOT SET') }}"
-      - "vm_name = {{ vm_name | default('NOT SET') }}"
+    debug:
+      msg:
+        - "aws_account_id = {{ aws_account_id | default('NOT SET') }}"
+        - "Instance ID = {{ instance_id | default('NOT SET') }}"
+        - "Region = {{ region | default('NOT SET') }}"
+        - "SNC tag = {{ tag_sncreqcreate | default('NOT SET') }}"
+        - "power_state = {{ power_state | default('NOT SET') }}"
+        - "vm_name = {{ vm_name | default('NOT SET') }}"
       
   - name: Validate power state
     fail:
@@ -118,6 +118,7 @@
     debug:
 
       msg: "Instance {{ resolved_instance.instance_id }} is now {{ desired_state }}"
+
 
 
 
