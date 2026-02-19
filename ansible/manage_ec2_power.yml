@@ -77,9 +77,9 @@
   #     - instance_lookup.instances | default([]) | length == 0
  
  
-  - name: Store resolved instance
-    set_fact:
-      resolved_instance: "{{ instance_lookup.instances[0] }}"
+  # - name: Store resolved instance
+  #   set_fact:
+  #     resolved_instance: "{{ instance_lookup.instances[0] }}"
 
   
   - name: Validate VM name if provided
@@ -118,6 +118,7 @@
     debug:
 
       msg: "Instance {{ resolved_instance.instance_id }} is now {{ desired_state }}"
+
 
 
 
