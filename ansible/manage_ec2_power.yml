@@ -27,7 +27,7 @@
       instance_ids: ["{{ instance_id }}"]
       aws_access_key: "{{ assumed_role.sts_creds.access_key }}"
       aws_secret_key: "{{ assumed_role.sts_creds.secret_key }}"
-      security_token: "{{ assumed_role.sts_creds.session_token }}"
+      session_token: "{{ assumed_role.sts_creds.session_token }}"
     register: instance_lookup
     when: instance_id | length > 0
  
@@ -39,7 +39,7 @@
         "tag:Name": "{{ vm_name }}"
       aws_access_key: "{{ assumed_role.sts_creds.access_key }}"
       aws_secret_key: "{{ assumed_role.sts_creds.secret_key }}"
-      security_token: "{{ assumed_role.sts_creds.session_token }}"
+      session_token: "{{ assumed_role.sts_creds.session_token }}"
     register: instance_lookup
     when:
       - instance_id | length == 0
@@ -53,7 +53,7 @@
         "tag:tag_sncreqcreate": "{{ tag_sncreqcreate }}"
       aws_access_key: "{{ assumed_role.sts_creds.access_key }}"
       aws_secret_key: "{{ assumed_role.sts_creds.secret_key }}"
-      security_token: "{{ assumed_role.sts_creds.session_token }}"
+      session_token: "{{ assumed_role.sts_creds.session_token }}"
     register: instance_lookup
     when:
       - instance_id | length == 0
@@ -100,10 +100,11 @@
       wait: yes
       aws_access_key: "{{ assumed_role.sts_creds.access_key }}"
       aws_secret_key: "{{ assumed_role.sts_creds.secret_key }}"
-      security_token: "{{ assumed_role.sts_creds.session_token }}"
+      session_token: "{{ assumed_role.sts_creds.session_token }}"
  
  
   - name: Output result
     debug:
 
       msg: "Instance {{ resolved_instance.instance_id }} is now {{ desired_state }}"
+
