@@ -1,0 +1,51 @@
+---
+- name: Manage AWS EC2 power state (strict governance - hardened)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    region: "{{ aws_region }}"
+    desired_state: "{{ power_state }}"
+    role_name: EC2PowerRole
+
+    # CHANGE THIS to match the REAL AWS tag key used for ServiceNow change request
+    snc_tag_key: "SNC"
+
+  tasks:
+  
+  # =====================================================
+  # POWER STATE MANAGEMENT
+  # =====================================================
+
+  - name: Change EC2 state (start or stop)
+    amazon.aws.ec2_instance:
+      instance_ids:
+        - "{{ resolved_instance.instance_id }}"
+      region: "{{ region }}"
+      state: "{{ desired_state }}"
+      wait: yes
+      aws_access_key: "{{ aws_temp_access_key }}"
+      aws_secret_key: "{{ aws_temp_secret_key }}"
+      session_token: "{{ aws_temp_session_token }}"
+    when: desired_state in ['started','stopped']
+
+  - name: Restart EC2 instance
+    amazon.aws.ec2_instance:
+      instance_ids:
+        - "{{ resolved_instance.instance_id }}"
+      region: "{{ region }}"
+      state: restarted
+      wait: yes
+      aws_access_key: "{{ aws_temp_access_key }}"
+      aws_secret_key: "{{ aws_temp_secret_key }}"
+      session_token: "{{ aws_temp_session_token }}"
+    when: desired_state == 'restarted'
+
+  # =====================================================
+  # OUTPUT
+  # =====================================================
+
+  - name: Output result
+    debug:
+      msg: "Instance {{ resolved_instance.instance_id }} is now {{ desired_state }}"
