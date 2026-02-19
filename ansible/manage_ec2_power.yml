@@ -59,11 +59,13 @@
       - instance_id | length == 0
       - vm_name | length == 0
       - tag_sncreqcreate | length > 0
-
+    
   - name: Fail if instance not found
     fail:
       msg: "No instance matched provided identifiers"
-    when: instance_lookup.instances | length == 0
+    when:
+      - instance_lookup is defined
+      - instance_lookup.instances | default([]) | length == 0
  
  
   - name: Store resolved instance
@@ -107,6 +109,7 @@
     debug:
 
       msg: "Instance {{ resolved_instance.instance_id }} is now {{ desired_state }}"
+
 
 
 
