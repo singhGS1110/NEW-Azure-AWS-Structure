@@ -62,7 +62,7 @@ steps:
     export LC_ALL=C.UTF-8
     source venv/bin/activate
  
-    ansible-playbook ansible/manage_ec2_power.yml -i localhost, \
+    ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
       -e aws_account_id=${{ parameters.aws_account_id }} \
       -e power_state=${{ parameters.power_state }} \
       -e instance_id=${{ parameters.instance_id }} \
@@ -74,6 +74,7 @@ steps:
  
 
   displayName: Execute EC2 Power Control
+
 
 
 
