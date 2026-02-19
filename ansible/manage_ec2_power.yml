@@ -6,7 +6,7 @@
   vars:
     region: "{{ aws_region }}"
     desired_state: "{{ power_state }}"
-    role_name: OrganizationAccountAccessRole
+    role_name: EC2PowerRole
  
   tasks:
  
@@ -105,4 +105,5 @@
  
   - name: Output result
     debug:
+
       msg: "Instance {{ resolved_instance.instance_id }} is now {{ desired_state }}"
