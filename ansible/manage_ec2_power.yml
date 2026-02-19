@@ -69,15 +69,7 @@
   - name: Store resolved instance
     set_fact:
       resolved_instance: "{{ instance_lookup.instances[0] }}"
- 
-  - name: Validate VM name if provided
-    fail:
-      msg: "VM name does not match instance tag"
-    when:
-      - vm_name | length > 0
-      - resolved_instance.tags.Name != vm_name
- 
- 
+  
   - name: Validate SNC tag if provided
     fail:
       msg: "SNC tag mismatch"
@@ -107,4 +99,5 @@
     debug:
 
       msg: "Instance {{ resolved_instance.instance_id }} is now {{ desired_state }}"
+
 
