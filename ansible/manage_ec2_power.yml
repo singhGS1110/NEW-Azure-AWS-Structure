@@ -1,0 +1,64 @@
+- name: Manage AWS EC2 power state
+  hosts: localhost
+  connection: local
+  gather_facts: no
+ 
+  vars:
+    region: "{{ aws_region }}"
+    desired_state: "{{ power_state }}"
+ 
+  tasks:
+ 
+  - name: Validate power state
+    fail:
+      msg: "power_state must be started or stopped"
+    when: desired_state not in ['started','stopped']
+ 
+  - name: Lookup instance by Name tag
+    amazon.aws.ec2_instance_info:
+      region: "{{ region }}"
+      filters:
+        "tag:Name": "{{ vm_name }}"
+    register: vm_lookup
+    when:
+      - instance_id | length == 0
+      - vm_name | length > 0
+ 
+  - name: Lookup instance by SNC tag
+    amazon.aws.ec2_instance_info:
+      region: "{{ region }}"
+      filters:
+        "tag:tag_sncreqcreate": "{{ tag_sncreqcreate }}"
+    register: tag_lookup
+    when:
+      - instance_id | length == 0
+      - vm_name | length == 0
+      - tag_sncreqcreate | length > 0
+ 
+  - name: Set resolved instance id
+    set_fact:
+      resolved_instance_id: >-
+        {{
+          instance_id
+          if instance_id | length > 0 else
+          vm_lookup.instances[0].instance_id
+          if vm_name | length > 0 else
+          tag_lookup.instances[0].instance_id
+        }}
+ 
+  - name: Fail if instance not found
+    fail:
+      msg: "No EC2 instance resolved from provided inputs"
+    when: resolved_instance_id is not defined
+ 
+  - name: Change EC2 state
+    amazon.aws.ec2_instance:
+      instance_ids:
+        - "{{ resolved_instance_id }}"
+      region: "{{ region }}"
+      state: "{{ desired_state }}"
+      wait: yes
+ 
+  - name: Output result
+    debug:
+      msg: "Instance {{ resolved_instance_id }} is now {{ desired_state }}"
