@@ -1,0 +1,89 @@
+trigger: none
+
+variables:
+- group: New variable group
+
+parameters:
+- name: aws_account_id
+  displayName: AWS Account ID
+  type: string
+  default: ''
+  
+- name: power_state
+  displayName: Power State
+  type: string
+  values:
+    - started
+    - stopped
+    - restarted
+
+- name: instance_id
+  displayName: EC2 Instance ID
+  type: string
+  default: ''
+
+- name: tag_sncreqcreate
+  displayName: SNC Request Tag
+  type: string
+  default: ''
+
+- name: aws_region
+  displayName: AWS Region
+  type: string
+  default: us-east-1
+
+- name: vm_name
+  displayName: VM Name
+  type: string
+  default: ''
+
+
+stages:
+- stage: AWS_EC2_Control
+  displayName: Control AWS EC2 from Environment VM
+
+  jobs:
+  - deployment: RunFromEnvironmentVM
+    displayName: Run Ansible on test environment VM
+
+    environment:
+      name: test
+      resourceName: ip-172-31-18-240
+      resourceType: VirtualMachine
+
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - script: |
+              echo "Setting locale to UTF-8"
+              export LANG=C.UTF-8
+              export LC_ALL=C.UTF-8
+              locale
+
+              python3 --version
+              python3 -m venv venv
+              source venv/bin/activate
+              pip install --upgrade pip
+              pip install ansible boto3 botocore
+              ansible-galaxy collection install amazon.aws
+            displayName: Install Ansible
+
+
+          - script: |
+              export LANG=C.UTF-8
+              export LC_ALL=C.UTF-8
+              source venv/bin/activate
+
+              ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
+                -e aws_account_id=${{ parameters.aws_account_id }} \
+                -e power_state=${{ parameters.power_state }} \
+                -e instance_id=${{ parameters.instance_id }} \
+                -e tag_sncreqcreate=${{ parameters.tag_sncreqcreate }} \
+                -e aws_region=${{ parameters.aws_region }} \
+                -e vm_name=${{ parameters.vm_name }} \
+                -e aws_access_key=$(AWS_ACCESS_KEY_ID) \
+                -e aws_secret_key=$(AWS_SECRET_ACCESS_KEY)
+
+            displayName: Execute EC2 Power Control
