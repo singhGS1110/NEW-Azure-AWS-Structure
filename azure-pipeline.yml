@@ -2,11 +2,6 @@ trigger: none
  
 pool:
   name: 'LocalPool'
-
-environment: 
-  name: 'Dev'
-  resourceName: myVM
-  resourceType: virtualMachine
  
 variables:
 - group: New variable group
@@ -79,6 +74,7 @@ steps:
  
 
   displayName: Execute EC2 Power Control
+
 
 
 
