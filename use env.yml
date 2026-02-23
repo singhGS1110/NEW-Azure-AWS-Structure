@@ -46,9 +46,14 @@ stages:
   - deployment: RunFromEnvironmentVM
     displayName: Run Ansible on test environment VM
 
-    environment:
-      name: test
-      resourceName: ip-172-31-18-240
+    # environment:
+    #   name: test
+    #   resourceName: ip-172-31-18-24
+    #   resourceType: VirtualMachine
+
+    environment: 
+      name: 'Dev'
+      resourceName: myVM
       resourceType: VirtualMachine
 
     strategy:
