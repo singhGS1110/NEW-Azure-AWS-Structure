@@ -6,40 +6,40 @@ pool:
 variables:
 - group: New variable group
  
-parameters:
-- name: aws_account_id
-  displayName: AWS Account ID
-  type: string
-  default: ''
+# parameters:
+# - name: aws_account_id
+#   displayName: AWS Account ID
+#   type: string
+#   default: ''
   
-- name: power_state
-  displayName: Power State
-  type: string
-  default: 'started'
-  values:
-    - started
-    - stopped
-    - restarted
+# - name: power_state
+#   displayName: Power State
+#   type: string
+#   default: 'started'
+#   values:
+#     - started
+#     - stopped
+#     - restarted
 
-- name: instance_id
-  displayName: EC2 Instance ID
-  type: string
-  default: ''
+# - name: instance_id
+#   displayName: EC2 Instance ID
+#   type: string
+#   default: ''
  
-- name: tag_sncreqcreate
-  displayName: SNC Request Tag
-  type: string
-  default: ''
+# - name: tag_sncreqcreate
+#   displayName: SNC Request Tag
+#   type: string
+#   default: ''
  
-- name: aws_region
-  displayName: AWS Region
-  type: string
-  default: us-east-1
+# - name: aws_region
+#   displayName: AWS Region
+#   type: string
+#   default: us-east-1
  
-- name: vm_name
-  displayName: VM Name
-  type: string
-  default: ''
+# - name: vm_name
+#   displayName: VM Name
+#   type: string
+#   default: ''
  
 steps:
  
@@ -64,18 +64,19 @@ steps:
     source venv/bin/activate
  
     ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
-      -e aws_account_id=${{ parameters.aws_account_id }} \
-      -e power_state=${{ parameters.power_state }} \
-      -e instance_id=${{ parameters.instance_id }} \
-      -e tag_sncreqcreate=${{ parameters.tag_sncreqcreate }} \
-      -e aws_region=${{ parameters.aws_region }} \
-      -e vm_name=${{ parameters.vm_name }} \
       -e deployment_id=$deploymentID \
+      -e aws_account_id=$aws_account_id\
+      -e power_state=$power_state \
+      -e instance_id=$instance_id \
+      -e tag_sncreqcreate=$tag_sncreqcreate \
+      -e aws_region=$aws_region \
+      -e vm_name=$vm_name \
       -e aws_access_key=$(AWS_ACCESS_KEY_ID) \
       -e aws_secret_key=$(AWS_SECRET_ACCESS_KEY)
  
 
   displayName: Execute EC2 Power Control
+
 
 
 
