@@ -15,6 +15,7 @@ parameters:
 - name: power_state
   displayName: Power State
   type: string
+  default: 'started'
   values:
     - started
     - stopped
@@ -75,6 +76,7 @@ steps:
  
 
   displayName: Execute EC2 Power Control
+
 
 
 
