@@ -69,12 +69,13 @@ steps:
       -e tag_sncreqcreate=${{ parameters.tag_sncreqcreate }} \
       -e aws_region=${{ parameters.aws_region }} \
       -e vm_name=${{ parameters.vm_name }} \
-      -e vm_name=${{ env.deploymentID }} \
+      -e deployment_id=$deploymentID \
       -e aws_access_key=$(AWS_ACCESS_KEY_ID) \
       -e aws_secret_key=$(AWS_SECRET_ACCESS_KEY)
  
 
   displayName: Execute EC2 Power Control
+
 
 
 
