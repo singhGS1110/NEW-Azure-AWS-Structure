@@ -73,9 +73,17 @@ steps:
       -e vm_name=$vm_name \
       -e aws_access_key=$(AWS_ACCESS_KEY_ID) \
       -e aws_secret_key=$(AWS_SECRET_ACCESS_KEY)
- 
-
   displayName: Execute EC2 Power Control
+
+- script: |
+    echo "===== FINAL JOB REPORT ====="
+    echo "Pipeline: $(Build.DefinitionName)"
+    echo "Run ID: $(Build.BuildId)"
+    echo "Job Status: $(Agent.JobStatus)"
+    echo "Logs URL:"
+    echo "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
+  displayName: Final Job Status Report
+  condition: always()
 
 
 
