@@ -64,13 +64,13 @@ steps:
     source venv/bin/activate
  
     ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
-      -e deployment_id=$deploymentID \
-      -e aws_account_id=$aws_account_id\
-      -e power_state=$power_state \
-      -e instance_id=$instance_id \
-      -e tag_sncreqcreate=$tag_sncreqcreate \
-      -e aws_region=$aws_region \
-      -e vm_name=$vm_name \
+      -e deployment_id=$(deploymentID) \
+      -e aws_account_id=$(aws_account_id) \
+      -e power_state=$(power_state) \
+      -e instance_id=$(instance_id) \
+      -e tag_sncreqcreate=$(tag_sncreqcreate) \
+      -e aws_region=$(aws_region) \
+      -e vm_name=$(vm_name) \
       -e aws_access_key=$(AWS_ACCESS_KEY_ID) \
       -e aws_secret_key=$(AWS_SECRET_ACCESS_KEY)
   displayName: Execute EC2 Power Control
@@ -84,6 +84,7 @@ steps:
     echo "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
   displayName: Final Job Status Report
   condition: always()
+
 
 
 
