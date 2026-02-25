@@ -63,7 +63,7 @@ steps:
     export LC_ALL=C.UTF-8
     source venv/bin/activate
  
-    ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
+    ansible-playbook ansible/manage_ec2_power_v3.yml -i localhost, \
       -e deployment_id=$(deploymentID) \
       -e aws_account_id=$(aws_account_id) \
       -e power_state=$(power_state) \
@@ -84,6 +84,7 @@ steps:
     echo "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
   displayName: Final Job Status Report
   condition: always()
+
 
 
 
