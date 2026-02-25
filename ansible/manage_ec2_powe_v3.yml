@@ -1,0 +1,123 @@
+---
+- name: Manage AWS EC2 power state (simple)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+ 
+  vars:
+    region: "{{ aws_region }}"
+    desired_state: "{{ power_state }}"
+ 
+  tasks:
+ 
+  # ------------------------------------------------
+  # BASIC INPUT VALIDATION
+  # ------------------------------------------------
+  - name: Validate instance ID
+    fail:
+      msg: "instance_id must be provided"
+    when: instance_id | default('') | trim | length == 0
+ 
+  - name: Validate deployment ID
+    fail:
+      msg: "deployment_id must be provided"
+    when: deployment_id | default('') | trim | length == 0
+ 
+  - name: Validate instance name
+    fail:
+      msg: "vm_name must be provided"
+    when: vm_name | default('') | trim | length == 0
+ 
+  - name: Validate SNC request tag
+    fail:
+      msg: "tag_sncreqcreate must be provided"
+    when: tag_sncreqcreate | default('') | trim | length == 0
+ 
+ 
+  # ------------------------------------------------
+  # FETCH INSTANCE DETAILS
+  # ------------------------------------------------
+  - name: Get instance info
+    amazon.aws.ec2_instance_info:
+      region: "{{ region }}"
+      instance_ids:
+        - "{{ instance_id }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+    register: ec2_info
+ 
+ 
+  - name: Fail if instance not found
+    fail:
+      msg: "Instance {{ instance_id }} not found"
+    when: ec2_info.instances | length == 0
+ 
+ 
+  - name: Extract instance tags
+    set_fact:
+      instance_tags: "{{ ec2_info.instances[0].tags }}"
+ 
+ 
+  # ------------------------------------------------
+  # STRICT TAG VALIDATION
+  # ------------------------------------------------
+  - name: Validate deploymentID tag
+    fail:
+      msg: >
+        deploymentID mismatch.
+        Expected {{ deployment_id }}
+        Found {{ instance_tags.deploymentID | default('NOT SET') }}
+    when: instance_tags.deploymentID | default('') != deployment_id
+ 
+ 
+  - name: Validate Name tag
+    fail:
+      msg: >
+        Name mismatch.
+        Expected {{ vm_name }}
+        Found {{ instance_tags.Name | default('NOT SET') }}
+    when: instance_tags.Name | default('') != vm_name
+ 
+ 
+  - name: Validate SNC Request Tag
+    fail:
+      msg: >
+        SNC Request Tag mismatch.
+        Expected {{ tag_sncreqcreate }}
+        Found {{ instance_tags['SNC Request Tag'] | default('NOT SET') }}
+    when: instance_tags['SNC Request Tag'] | default('') != tag_sncreqcreate
+ 
+ 
+  # ------------------------------------------------
+  # POWER MANAGEMENT
+  # ------------------------------------------------
+  - name: Start or Stop instance
+    amazon.aws.ec2_instance:
+      instance_ids:
+        - "{{ instance_id }}"
+      region: "{{ region }}"
+      state: "{{ desired_state }}"
+      wait: yes
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+    when: desired_state in ['started','stopped']
+ 
+ 
+  - name: Restart instance
+    amazon.aws.ec2_instance:
+      instance_ids:
+        - "{{ instance_id }}"
+      region: "{{ region }}"
+      state: restarted
+      wait: yes
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+    when: desired_state == 'restarted'
+ 
+ 
+  # ------------------------------------------------
+  # OUTPUT
+  # ------------------------------------------------
+  - name: Output result
+    debug:
+      msg: "Instance {{ instance_id }} is now {{ desired_state }}"
