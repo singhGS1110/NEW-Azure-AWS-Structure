@@ -1,7 +1,22 @@
 trigger: none
 
+# Secret variables from variable group (AWS keys etc.)
 variables:
 - group: New variable group
+
+# Runtime override variables (set when clicking Run pipeline)
+- name: aws_account_id
+  value: ''
+- name: power_state
+  value: ''
+- name: instance_id
+  value: ''
+- name: tag_sncreqcreate
+  value: ''
+- name: aws_region
+  value: ''
+- name: vm_name
+  value: ''
 
 stages:
 - stage: AWS_EC2_Control
@@ -26,12 +41,9 @@ stages:
           - script: |
               echo "Installing system dependencies"
               sudo apt-get install -y python3-venv python3-pip
-              echo "Setting locale to UTF-8"
               export LANG=C.UTF-8
               export LC_ALL=C.UTF-8
-              locale
 
-              python3 --version
               python3 -m venv venv
               source venv/bin/activate
               pip install --upgrade pip
