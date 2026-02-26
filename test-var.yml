@@ -1,0 +1,58 @@
+trigger: none
+
+variables:
+- group: New variable group
+
+stages:
+- stage: AWS_EC2_Control
+  displayName: Control AWS EC2 from Environment VM
+
+  jobs:
+  - deployment: RunFromEnvironmentVM
+    displayName: Run Ansible on test environment VM
+
+    environment: 
+      name: 'Dev'
+      resourceName: DESKTOP-7JFMF3P
+      resourceType: VirtualMachine
+
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - checkout: self
+
+          - script: |
+              echo "Installing system dependencies"
+              sudo apt-get install -y python3-venv python3-pip
+              echo "Setting locale to UTF-8"
+              export LANG=C.UTF-8
+              export LC_ALL=C.UTF-8
+              locale
+
+              python3 --version
+              python3 -m venv venv
+              source venv/bin/activate
+              pip install --upgrade pip
+              pip install ansible boto3 botocore
+              ansible-galaxy collection install amazon.aws
+            displayName: Install Ansible
+
+
+          - script: |
+              export LANG=C.UTF-8
+              export LC_ALL=C.UTF-8
+              source venv/bin/activate
+
+              ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
+                -e aws_account_id=$(aws_account_id) \
+                -e power_state=$(power_state) \
+                -e instance_id=$(instance_id) \
+                -e tag_sncreqcreate=$(tag_sncreqcreate) \
+                -e aws_region=$(aws_region) \
+                -e vm_name=$(vm_name) \
+                -e aws_access_key=$(AWS_ACCESS_KEY_ID) \
+                -e aws_secret_key=$(AWS_SECRET_ACCESS_KEY)
+
+            displayName: Execute EC2 Power Control
