@@ -80,7 +80,7 @@ stages:
               export LC_ALL=C.UTF-8
               source venv/bin/activate
 
-              ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
+              ansible-playbook ansible/manage_ec2_power_v4.yml -i localhost, \
                 -e aws_account_id=$(aws_account_id) \
                 -e power_state=$(power_state) \
                 -e instance_id=$(instance_id) \
