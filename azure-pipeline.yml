@@ -1,7 +1,7 @@
 trigger: none
  
 pool:
-  name: 'LocalPool'
+  name: 'Linux_Self_Hosted'
  
 variables:
 - group: New variable group
@@ -84,6 +84,7 @@ steps:
     echo "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
   displayName: Final Job Status Report
   condition: always()
+
 
 
 
