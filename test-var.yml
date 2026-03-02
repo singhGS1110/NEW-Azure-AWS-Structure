@@ -58,12 +58,12 @@ stages:
               source venv/bin/activate
 
               ansible-playbook ansible/manage_ec2_power_v2.yml -i localhost, \
-                 aws_account_id=$(variables.aws_account_id) \
-                 power_state=$(variables.power_state) \
-                 instance_id=$(variables.instance_id) \
-                 tag_sncreqcreate=$(variables.tag_sncreqcreate) \
-                 aws_region=$(variables.aws_region) \
-                 vm_name=$(variables.vm_name) \
+                 aws_account_id=$(aws_account_id) \
+                 power_state=$(power_state) \
+                 instance_id=$(instance_id) \
+                 tag_sncreqcreate=$(tag_sncreqcreate) \
+                 aws_region=$(aws_region) \
+                 vm_name=$(vm_name) \
                  aws_access_key=$(AWS_ACCESS_KEY_ID) \
                  aws_secret_key=$(AWS_SECRET_ACCESS_KEY)
 
